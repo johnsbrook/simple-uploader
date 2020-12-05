@@ -10,6 +10,9 @@ let storage = new GridFsStorage({
   file: (req, file) => {
     return new Promise((resolve, reject) => {
       const fileInfo = {
+        title: { type: String },
+        location: { type: String },
+        description: { type: String },
         filename: file.originalname,
         bucketName: "imageUpload",
       };

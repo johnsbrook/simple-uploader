@@ -1,45 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="X-UA-Compatible" content="ie=edge">
-<meta name="Description" content="Enter your description here"/>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.0-alpha2/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css">
-<link rel="stylesheet" href="assets/css/style.css">
-<title>Title</title>
-</head>
-<body>
-    <form action="/upload" method="POST" enctype="multipart/form-data">
-        <label for="upload">Upload</label>
-        <input type="file" id="upload"
-          name="upload" value="upload" required>
-      </div>
-      <div>
-        <button type="submit">Submit</button>
-      </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta name="Description" content="Enter your description here" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.0-alpha2/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <title>Title</title>
+  </head>
+  <body>
+    <h5 class="text-center">Log your Photo!</h5>
+    <form action="/upload" method="post" class="text-center" enctype="multipart/form-data">
+      <input
+        class="px-3 py-1"
+        type="file"
+        name="upload"
+        id="upload"
+        placeholder="&nbsp;&nbsp;&nbsp;&nbsp;What's the URL where this picture is located?"
+      /><br />
+      <button class="button btn" type="submit">Log</button>
+      <span class="button buttonCancel btn ml-1" id="logNewPhotoFormCancelBtn"
+        ><i class="fas fa-times"></i
+      ></span>
     </form>
+   
+    <div id="carrousel"></div>
     <div id="images"></div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.0-alpha2/js/bootstrap.min.js"></script>
-<script>
-    const imagesEl = document.querySelector('#images');
-    const API = '/files/'
-    fetch(API)
-    .then((res) => {
-        return res.json(API);
-    })
-    .then((res) => {
-        res.map((data) => {
-            // console.log(data.filename);
-            const URL = "/image/" + data.filename;
-            console.log(URL);
-            var image = `<img src="${URL}" style="max-height:250px;">`;
-            console.log(image);
-            imagesEl.insertAdjacentHTML('beforeend', image);
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.0-alpha2/js/bootstrap.min.js"></script>
+    <script>
+      const imagesEl = document.querySelector("#images");
+      const API = "/files/";
+      fetch(API)
+        .then((res) => {
+          return res.json(API);
         })
-    })
-</script>
-</body>
+        .then((res) => {
+          console.log(res.length - 1);
+          const lastItem = res.length - 1;
+          const itemSelected = res[lastItem];
+          const itemSelectedID = itemSelected._id;
+          console.log(itemSelected);
+
+          const URL = "/image/" + itemSelected.filename;
+          console.log(URL);
+          var image = `<img src="${URL}" class="text-center" id="${itemSelected}" style="max-height:250px;">`;
+
+          imagesEl.insertAdjacentHTML("beforeend", image);
+          console.log(image);
+
+          const form = `<form action="/log" method="post">
+                            <label for="title">Title</label><br>
+                            <input class="px-3 py-1" type="text" name="title" id="title" placeholder="&nbsp;&nbsp;&nbsp;&nbsp;How would you like to name this picture?"><br>
+                            <label for="URL">Web Address</label><br>
+                            <input class="px-3 py-1" type="text" name="URL" id="URL" value="${URL}"><br>
+                            <label for="location">Location</label><br>
+                            <input class="px-3 py-1" type="text" name="location" id="location" placeholder="&nbsp;&nbsp;&nbsp;&nbsp;Where was this picture taken?"><br>
+                            <label for="description">Description</label><br>
+                            <textarea class="px-3 py-1" type="text" name="description" id="description" placeholder="&nbsp;&nbsp;&nbsp;&nbsp;Would you like to say something about this picture?"></textarea><br>
+                            <button class="button btn btn-primary">Log</button>
+                        </form>`;
+
+          const formLocation = document.getElementById(`${itemSelected}`);
+          formLocation.insertAdjacentHTML("afterend", form);
+
+          const carrousel = document.querySelector('#carrousel')
+          res.map((res) => {
+              console.log(res);
+            var carrouselURL = "/image/" + res.filename;
+            var carrouselID = res._id;
+            console.log(carrouselURL);
+            var carrouselImage = `<img src="${carrouselURL}" class="text-center" id="${carrouselID}" style="max-height:250px;">`;
+            console.log(carrouselImage)
+            carrousel.insertAdjacentHTML("afterend", carrouselImage);
+          })
+        });
+    </script>
+  </body>
 </html>
