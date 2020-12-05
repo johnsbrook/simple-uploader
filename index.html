@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="Description" content="Enter your description here"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.0-alpha2/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css">
+<link rel="stylesheet" href="assets/css/style.css">
+<title>Title</title>
+</head>
+<body>
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+        <label for="upload">Upload</label>
+        <input type="file" id="upload"
+          name="upload" value="upload" required>
+      </div>
+      <div>
+        <button type="submit">Submit</button>
+      </div>
+    </form>
+    <div id="images"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.0-alpha2/js/bootstrap.min.js"></script>
+<script>
+    const imagesEl = document.querySelector('#images');
+    const API = '/files/'
+    fetch(API)
+    .then((res) => {
+        return res.json(API);
+    })
+    .then((res) => {
+        res.map((data) => {
+            // console.log(data.filename);
+            const URL = "/image/" + data.filename;
+            console.log(URL);
+            var image = `<img src="${URL}" style="max-height:250px;">`;
+            console.log(image);
+            imagesEl.insertAdjacentHTML('beforeend', image);
+        })
+    })
+</script>
+</body>
+</html>
