@@ -10,9 +10,6 @@ let storage = new GridFsStorage({
   file: (req, file) => {
     return new Promise((resolve, reject) => {
       const fileInfo = {
-        title: { type: String },
-        location: { type: String },
-        description: { type: String },
         filename: file.originalname,
         bucketName: "imageUpload",
       };
@@ -24,7 +21,10 @@ let storage = new GridFsStorage({
 const upload = multer({ storage });
 
 app.post("/upload", upload.single("upload"), (req, res) => {
-  res.json({ file: req.file });
+  // res.json({ file: req.file })
+  // .then((res) => {
+    res.redirect('/');
+  // })
 });
 
 app.get("/files", (req, res) => {
@@ -36,7 +36,7 @@ app.get("/files", (req, res) => {
       });
     }
     //file exist
-    return res.json(files);
+    res.json(files)
   });
 });
 

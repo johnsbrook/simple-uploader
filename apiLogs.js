@@ -9,7 +9,7 @@ app.post("/log", ({ body }, res) => {
   logs
     .create(body)
     .then((db) => {
-      res.redirect("/log");
+      res.redirect("/");
     })
     .catch((err) => {
       res.json(err);
