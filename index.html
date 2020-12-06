@@ -18,7 +18,12 @@
   </head>
   <body>
     <h5 class="text-center">Log your Photo!</h5>
-    <form action="/upload" method="post" class="text-center" enctype="multipart/form-data">
+    <form
+      action="/upload"
+      method="post"
+      class="text-center"
+      enctype="multipart/form-data"
+    >
       <input
         class="px-3 py-1"
         type="file"
@@ -31,7 +36,7 @@
         ><i class="fas fa-times"></i
       ></span>
     </form>
-   
+
     <div id="carrousel"></div>
     <div id="images"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
@@ -60,8 +65,8 @@
           const form = `<form action="/log" method="post">
                             <label for="title">Title</label><br>
                             <input class="px-3 py-1" type="text" name="title" id="title" placeholder="&nbsp;&nbsp;&nbsp;&nbsp;How would you like to name this picture?"><br>
-                            <label for="URL">Web Address</label><br>
-                            <input class="px-3 py-1" type="text" name="URL" id="URL" value="${URL}"><br>
+                            <label for="URL" style="display: none">Web Address</label><br>
+                            <input class="px-3 py-1" type="text" name="URL" id="URL" value="${URL}"  style="display: none"><br>
                             <label for="location">Location</label><br>
                             <input class="px-3 py-1" type="text" name="location" id="location" placeholder="&nbsp;&nbsp;&nbsp;&nbsp;Where was this picture taken?"><br>
                             <label for="description">Description</label><br>
@@ -72,17 +77,58 @@
           const formLocation = document.getElementById(`${itemSelected}`);
           formLocation.insertAdjacentHTML("afterend", form);
 
-          const carrousel = document.querySelector('#carrousel')
-          res.map((res) => {
+          const carrouselAPI = "/log";
+          fetch(carrouselAPI)
+            .then((res) => {
+              return res.json(carrouselAPI);
+            })
+            .then((res) => {
               console.log(res);
-            var carrouselURL = "/image/" + res.filename;
-            var carrouselID = res._id;
-            console.log(carrouselURL);
-            var carrouselImage = `<img src="${carrouselURL}" class="text-center" id="${carrouselID}" style="max-height:250px;">`;
-            console.log(carrouselImage)
-            carrousel.insertAdjacentHTML("afterend", carrouselImage);
-          })
+              const carrousel = document.querySelector("#carrousel");
+              res.map((res) => {
+                console.log(res.URL);
+                var carrouselURL = res.URL;
+                var carrouselID = res._id;
+                console.log(carrouselURL);
+                var carrouselImage = `<img src="${carrouselURL}" class="text-center" id="${carrouselID}" style="max-height:250px;"><br>
+                    <div>${res.description}
+                        <button onClick="delete" data-id=${res._id} class="delete buttonCancel ml-3">
+                                    <i class="far fa-trash-alt delete" data-id=${res._id}></i>
+                        </button>
+                    </div>`;
+                console.log(carrouselImage);
+                carrousel.insertAdjacentHTML("afterbegin", carrouselImage);
+              });
+
+              
+            });
         });
+        
+        var eventPicDiv = document.querySelector("#carrousel");
+         // Delete images from database
+         eventPicDiv.addEventListener("click", (e) => {
+                // Conditional to delete image based on 'delete' class
+                console.log(`You've clicked on carrousel`)
+                console.log(e.target);
+                if (e.target.matches(".delete")) {
+                  var el = e.target;
+                  var dataID = el.getAttribute("data-id");
+
+                  // Dialog to confirm deleting image
+                //   var thisVar = confirm("Would you like to delete this image?");
+                //   if (thisVar) {
+                    fetch("/deleteLog/" + dataID, {
+                      method: "delete",
+                    }).then(() => {
+                    //   eventPicDiv.style.visibility = "hidden";
+                    //   eventPicDiv.innerHTML = "";
+                    //   eventPicDiv.classList.remove("flip-in-ver-left");
+                      thisVar = "";
+                      location.reload();
+                    });
+                //   }
+                }
+              });
     </script>
   </body>
 </html>
